@@ -8,6 +8,6 @@ sdk:
     runtime: browser
   path: ../client/sdk
 classes:
-  - path: ./sendSmsService.ts
+  - path: ./endpoints/users.ts
     type: jsonrpc
     methods: []

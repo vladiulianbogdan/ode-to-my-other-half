@@ -16,4 +16,4 @@ classes:
     methods:
       - name: sendMessage
         type: cron
-        cronString: "0 * * * *"
+        cronString: "* * * * *"

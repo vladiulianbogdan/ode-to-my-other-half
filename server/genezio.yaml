@@ -1,5 +1,7 @@
 name: ode-to-my-other-half
 region: us-east-1
+frontend:
+  path: ../client/build
 sdk:
   language: ts
   options:

@@ -1,13 +1,16 @@
-export class SendSMSService {
-	async sendTestMessage(message: string, to: string): Promise<string> {
+export class SendMessageService {
+    client: any;
+    constructor() {
         require('dotenv').config();
         const accountSid: string | undefined = process.env.TWILIO_ACCOUNT_SID;
         const authToken: string | undefined = process.env.TWILIO_AUTH_TOKEN;
         console.log(accountSid, authToken);
 
-        const client: any = require('twilio')(accountSid, authToken);
+        this.client = require('twilio')(accountSid, authToken);
+    }
 
-        const msg = await client.messages.create({
+	async sendTestMessage(message: string | undefined, to: string | undefined): Promise<string> {
+        const msg = await this.client.messages.create({
             body: message,
             from: "whatsapp:+14155238886",
             to: "whatsapp:" + to

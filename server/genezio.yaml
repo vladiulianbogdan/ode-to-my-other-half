@@ -11,3 +11,9 @@ classes:
   - path: ./endpoints/users.ts
     type: jsonrpc
     methods: []
+  - path: ./endpoints/cron.ts
+    type: jsonrpc
+    methods:
+      - name: sendMessage
+        type: cron
+        cronString: "0 * * * *"

@@ -4,7 +4,7 @@ import { UserModel } from "../models/user"
 import { ActiveSession } from "../models/activeSession"
 import { MONGO_DB_URI, saltedPassword, validatePassword } from "../helper"
 
-type UserSettings = {
+export type UserSettings = {
     phone?: string | undefined,
     poemSettings?: {
         poemAdjective?: string | undefined,

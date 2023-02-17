@@ -17,6 +17,7 @@ export class OpenAIAssistant {
     const completion = await this.openai.createCompletion({
       model: "text-davinci-003",
       prompt: requestText,
+      "temperature": 0.8,
       max_tokens: 2048
     });
     console.log(

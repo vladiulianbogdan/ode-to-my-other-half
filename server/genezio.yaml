@@ -6,7 +6,7 @@ sdk:
   language: ts
   options:
     runtime: browser
-  path: ../client/sdk
+  path: ../client/src/sdk
 classes:
   - path: ./endpoints/users.ts
     type: jsonrpc

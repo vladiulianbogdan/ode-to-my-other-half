@@ -4,6 +4,7 @@ import { SendMessageService } from "../services/sendSmsService";
 import { UserService } from "./users";
 import mongoose from "mongoose";
 import { MONGO_DB_URI } from "../helper";
+const _ = require('lodash')
 
 export class SendMessageCron {
     constructor() {
@@ -19,7 +20,11 @@ export class SendMessageCron {
                 const hour = new Date().getHours();
                 if (hour == user.settings.hour) {
                     console.log(`DEBUG: Send message to user ${user.name}`);
-                    const request = "Write a " + user.settings?.poemSettings?.poemAdjective + " poem about  " + user.settings?.poemSettings?.words.join(",") + " for my partener" + ".\n";
+
+                    const words = _.sampleSize(user.settings?.poemSettings?.words, 3);
+                    console.log(`Using words: ${words}`)
+
+                    const request = `A ${user.settings?.poemSettings?.poemAdjective} poem for my partner about ${words.join(",")}`;
                     const response = openAIAssistant.askChatGPT(request).then(async (response) => {
                         if (response) {
                             sendMessageService.sendTestMessage(response, user.settings?.phone);

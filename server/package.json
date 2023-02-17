@@ -1,0 +1,22 @@
+{
+  "name": "ode-to-my-other-half",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vladiulianbogdan/ode-to-my-other-half.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vladiulianbogdan/ode-to-my-other-half/issues"
+  },
+  "homepage": "https://github.com/vladiulianbogdan/ode-to-my-other-half#readme",
+  "devDependencies": {
+    "@types/node": "^18.13.0"
+  }
+}

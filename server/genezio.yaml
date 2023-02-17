@@ -1,0 +1,11 @@
+name: ode-to-my-other-half
+region: us-east-1
+sdk:
+  language: ts
+  options:
+    runtime: browser
+  path: ../client/sdk
+classes:
+  - path: ./sendSmsService.ts
+    type: jsonrpc
+    methods: []

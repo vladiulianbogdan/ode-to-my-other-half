@@ -8,9 +8,11 @@ import {
 } from "reactstrap";
 import { useState, useRef, useEffect } from "react";
 import { AuthResultStatus, User, UserService } from "../sdk/userService.sdk";
+import { PoemPreview } from "../sdk/poemPreview.sdk";
 
 export default function Dashboard() {
-    const [user, setUser] = useState<User|undefined>(undefined);
+    const [user, setUser] = useState<User | undefined>(undefined);
+    const [preview, setPreview] = useState("");
     const [inputValue, setInputValue] = useState("");
     const [phone, setPhone] = useState("");
     const [hour, setHour] = useState("");
@@ -19,11 +21,15 @@ export default function Dashboard() {
     const ref = useRef(null);
 
     useEffect(() => {
-        const _user: string|null = localStorage.getItem("user");
+        const _user: string | null = localStorage.getItem("user");
 
         if (_user) {
             const currentUser: User = JSON.parse(_user);
             setUser(currentUser)
+
+            UserService.getPoems(currentUser._id).then((response: any) => {
+
+            })
 
             UserService.getPreferences(currentUser._id).then((response: any) => {
                 if (response.status === AuthResultStatus.Fail) {
@@ -56,6 +62,19 @@ export default function Dashboard() {
             })
     }
 
+    const previewButtonPressed = () => {
+        console.log("Saved!")
+
+        if (user?._id === undefined) {
+            console.log("User not logged in!")
+            return
+        }
+
+        PoemPreview.generatePoemPreview(user?._id!, "").then((result) => {
+            setPreview(result)
+        })
+    }
+
     return (
         <Container className="mt-2">
             <Card className="p-4 mt-2">
@@ -66,33 +85,33 @@ export default function Dashboard() {
 
                         <Row>
                             <>
-                            <label>Phone</label>
-                            <Input
-                                className="form-control"
-                                placeholder="Phone"
-                                type="text"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                autoComplete="phne"
-                            />
-                            <label>Poem Adjective</label>
-                            <Input
-                                className="form-control"
-                                placeholder="Poem Adjective"
-                                type="text"
-                                value={poemAjective}
-                                onChange={(e) => setPoemAdjective(e.target.value)}
-                                autoComplete="poem adjective"
-                            />
-                            <label>Hour</label>
-                            <Input
-                                className="form-control"
-                                placeholder="Hour"
-                                type="text"
-                                value={hour}
-                                onChange={(e) => setHour(e.target.value)}
-                                autoComplete="poem adjective"
-                            />
+                                <label>Phone</label>
+                                <Input
+                                    className="form-control"
+                                    placeholder="Phone"
+                                    type="text"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    autoComplete="phne"
+                                />
+                                <label>Poem Adjective</label>
+                                <Input
+                                    className="form-control"
+                                    placeholder="Poem Adjective"
+                                    type="text"
+                                    value={poemAjective}
+                                    onChange={(e) => setPoemAdjective(e.target.value)}
+                                    autoComplete="poem adjective"
+                                />
+                                <label>Hour</label>
+                                <Input
+                                    className="form-control"
+                                    placeholder="Hour"
+                                    type="text"
+                                    value={hour}
+                                    onChange={(e) => setHour(e.target.value)}
+                                    autoComplete="poem adjective"
+                                />
                                 Include Words:
                                 <div style={{ display: "flex" }}>
                                     <Input
@@ -113,7 +132,15 @@ export default function Dashboard() {
                                 >
                                     Save
                                 </Button>
-                                </>
+                                <Button
+                                    type="submit"
+                                    color="primary"
+                                    onClick={() => { previewButtonPressed() }}
+                                >
+                                    Preview
+                                </Button>
+                            </>
+                            <div style={{whiteSpace: "pre-line"}}>{preview}</div>
                         </Row>
                     </Col>
                 </Row>

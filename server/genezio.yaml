@@ -1,12 +1,12 @@
 name: ode-to-my-other-half
 region: us-east-1
-frontend:
-  path: ../client/build
 sdk:
   language: ts
   options:
     runtime: browser
   path: ../client/src/sdk
+frontend:
+  path: ../client/build
 classes:
   - path: ./endpoints/users.ts
     type: jsonrpc
@@ -17,3 +17,6 @@ classes:
       - name: sendMessage
         type: cron
         cronString: "* * * * *"
+  - path: endpoints/preview.ts
+    type: jsonrpc
+    methods: []

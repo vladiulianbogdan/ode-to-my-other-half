@@ -16,7 +16,7 @@ classes:
     methods:
       - name: sendMessage
         type: cron
-        cronString: "* * * * *"
+        cronString: "0 * * * *"
   - path: endpoints/preview.ts
     type: jsonrpc
     methods: []

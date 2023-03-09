@@ -10,7 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  async function handleSubmit(event: any) {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
     if (!email || !password) {
       setError("All fields are mandatory");
@@ -21,7 +21,7 @@ export default function Login() {
 
     console.log("MAKE LOGIN REQUEST")
     const res = await UserService.login(email, password);
-    console.log("MAKE LOGIN REQUEST", res)
+    console.log(res)
 
     if (res.status === AuthResultStatus.Fail) {
       setError(res.message!);

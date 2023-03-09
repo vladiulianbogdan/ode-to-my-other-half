@@ -96,7 +96,7 @@ export class UserService {
      * @returns 
      */
     async login(email: string, password: string): Promise<AuthResult> {
-        console.log(`Login request received for user with email ${email}`)
+        console.log(`Loginn request received for user with email ${email}`)
 
         const user = await UserModel.findOne({ email: email });
 

@@ -25,17 +25,14 @@ export class SendMessageCron {
                     console.log(`Using words: ${words}`)
 
                     const request = `A ${user.settings?.poemSettings?.poemAdjective} poem for my partner about ${words.join(",")}`;
-                    const response = openAIAssistant.askChatGPT(request).then(async (response) => {
+                    const openAIResponse = openAIAssistant.askChatGPT(request).then(async (response) => {
                         if (response) {
-                            const response2 = await sendMessageService.sendTestMessage(response, user.settings?.phone);
-                            console.log(response2)
+                            await sendMessageService.sendTestMessage(response, user.settings?.phone);
                             const userService = new UserService();
                             await userService.addPoem(user._id.toString(), response);
-                        } else {
-                            console.log("aici!")
                         }
                     });
-                    promises.push(response);
+                    promises.push(openAIResponse);
                 }
             }
         }

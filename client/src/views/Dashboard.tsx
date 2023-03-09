@@ -5,20 +5,25 @@ import {
     Row,
     Col,
     Input,
+    Spinner
 } from "reactstrap";
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthResultStatus, User, UserService } from "../sdk/userService.sdk";
 import { PoemPreview } from "../sdk/poemPreview.sdk";
 
 export default function Dashboard() {
     const [user, setUser] = useState<User | undefined>(undefined);
     const [preview, setPreview] = useState("");
-    const [inputValue, setInputValue] = useState("");
     const [phone, setPhone] = useState("");
     const [hour, setHour] = useState("");
     const [poemAjective, setPoemAdjective] = useState("");
     const [words, setWords] = useState<string>("");
+
+    const [buttonLoading, setButtonLoading] = useState(false);
+
     const ref = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const _user: string | null = localStorage.getItem("user");
@@ -38,31 +43,37 @@ export default function Dashboard() {
 
                 setPhone(response.phone)
                 setPoemAdjective(response.poemSettings?.poemAdjective)
-                setWords(response.poemSettings?.words)
+                setWords(response.poemSettings?.words.join(","))
                 setHour(response.hour)
             });
+        } else {
+            console.log("User not logged in!");
+            navigate("/login");
         }
     }, [])
 
-    const saveButtonPressed = () => {
+    const saveButtonPressed = async () => {
         console.log("Saved!")
+        setButtonLoading(true)
 
         if (user?._id === undefined) {
             console.log("User not logged in!")
             return
         }
-
-        UserService.setPreferences(user?._id!, poemAjective, words.split(","), parseInt(hour), phone)
-            .then((result) => {
-                if (result.status === AuthResultStatus.Ok) {
-                    console.log("Success")
-                } else {
-                    console.log("Failure")
-                }
-            })
+        try {
+            const result = await UserService.setPreferences(user?._id!, poemAjective, words.split(","), parseInt(hour), phone)
+            if (result.status === AuthResultStatus.Ok) {
+                console.log("Success")
+            } else {
+                console.log("Failure")
+            }
+        } catch (e) {
+            console.log(e)
+        }
+        setButtonLoading(false)
     }
 
-    const previewButtonPressed = () => {
+    const previewButtonPressed = async () => {
         console.log("Saved!")
 
         if (user?._id === undefined) {
@@ -70,9 +81,14 @@ export default function Dashboard() {
             return
         }
 
-        PoemPreview.generatePoemPreview(user?._id!, "").then((result) => {
-            setPreview(result)
-        })
+        const result = await PoemPreview.generatePoemPreview(user?._id!, "")
+        setPreview(result)
+    }
+
+    const onLogout = () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("apiToken");
+        navigate("/login");
     }
 
     return (
@@ -81,8 +97,19 @@ export default function Dashboard() {
 
                 <Row className="mt-2">
                     <Col sm="11">
-                        <h3>Configuration</h3>
-
+                        <Row>
+                            <Col lg="11">
+                                <h3>Configuration</h3>
+                            </Col>
+                            <Col lg="1">
+                                <Button
+                                    className="btn btn-primary"
+                                    onClick={onLogout}
+                                >
+                                    Logout
+                                </Button>
+                            </Col>
+                        </Row>
                         <Row>
                             <>
                                 <label>Phone</label>
@@ -112,24 +139,30 @@ export default function Dashboard() {
                                     onChange={(e) => setHour(e.target.value)}
                                     autoComplete="poem adjective"
                                 />
-                                Include Words:
-                                <div style={{ display: "flex" }}>
-                                    <Input
-                                        ref={ref}
-                                        className="form-control"
-                                        placeholder="Poem Adjective"
-                                        type="text"
-                                        value={words}
-                                        onChange={(e) => setWords(e.target.value)}
-                                        autoComplete="poem adjective"
-                                    />
-                                </div>
+                                <label>Include Words (separate them using commas):</label>
+                                <Input
+                                    ref={ref}
+                                    className="form-control mb-4"
+                                    placeholder="Words to include in poem"
+                                    type="text"
+                                    value={words}
+                                    onChange={(e) => setWords(e.target.value)}
+                                    autoComplete="poem adjective"
+                                />
 
                                 <Button
+                                    className="mb-2"
                                     type="submit"
                                     color="primary"
                                     onClick={() => { saveButtonPressed() }}
                                 >
+                                    {buttonLoading && <Spinner
+                                        as="span"
+                                        animation="border"
+                                        size="sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                    />}
                                     Save
                                 </Button>
                                 <Button
